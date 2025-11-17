@@ -1,10 +1,9 @@
 import express from "express";
-import { registerUser, loginUser } from "../controllers/authController.js";
+import authController from "../controllers/authController.js";
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
 import User from "../models/User.js";
 
 const router = express.Router();
-
 
 router.get("/", protect, adminOnly, async (req, res) => {
   try {
@@ -14,7 +13,6 @@ router.get("/", protect, adminOnly, async (req, res) => {
     res.status(500).json({ msg: "Error en el servidor" });
   }
 });
-
 
 router.get("/me", protect, async (req, res) => {
   try {
@@ -26,16 +24,18 @@ router.get("/me", protect, async (req, res) => {
   }
 });
 
-
 router.put("/:id", protect, adminOnly, async (req, res) => {
   try {
-    const updateUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updateUser = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
     res.json(updateUser);
   } catch (error) {
     res.status(500).json({ msg: "Error en el servidor" });
   }
 });
-
 
 router.delete("/:id", protect, adminOnly, async (req, res) => {
   try {
@@ -47,7 +47,7 @@ router.delete("/:id", protect, adminOnly, async (req, res) => {
 });
 
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/register", (req, res) => authController.registerUser(req, res));
+router.post("/login", (req, res) => authController.loginUser(req, res));
 
 export default router;

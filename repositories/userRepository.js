@@ -1,10 +1,17 @@
 import User from "../models/User.js";
 
+class UserRepository {
+  async findbyEmail(email) {
+    return await User.findOne({ email });
+  }
 
-const findbyEmail = async (email) => await User.findOne({ email });
-const findById = async (id) => await User.findById(id);
-const create = async (userData) => await User.create(userData);
+  async findById(id) {
+    return await User.findById(id);
+  }
 
+  async create(userData) {
+    return await User.create(userData);
+  }
+}
 
-export default { findById, findbyEmail, create };
-
+export default new UserRepository();
